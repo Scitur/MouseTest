@@ -11,8 +11,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyMouseListener implements MouseListener, MouseMotionListener {
-    private final MyFrame comp;
+public class GameMouseListener implements MouseListener, MouseMotionListener {
+    private final GamePanel comp;
     private Instant start;
 
     private List<Point> path;
@@ -21,7 +21,7 @@ public class MyMouseListener implements MouseListener, MouseMotionListener {
 
     private Rectangle target = new Rectangle(Constants.TARGET_SIZE, Constants.TARGET_SIZE);
 
-    public MyMouseListener(MyFrame parent) {
+    public GameMouseListener(GamePanel parent) {
         comp = parent;
         reset();
     }

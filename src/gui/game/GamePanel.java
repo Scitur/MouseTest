@@ -1,61 +1,52 @@
 package gui.game;
 
+import gui.CardPanel;
+import gui.CardHolderPanel;
 import util.Constants;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
-public class MyFrame extends JPanel {
-    private final MyMouseListener listener;
-    final private JButton startButton;
+public class GamePanel extends CardPanel {
+    public static GameMouseListener listener;
     protected Point target;
 
-    private int clicks;
-
-    public MyFrame() {
+    public GamePanel(CardHolderPanel cardPanel) {
+        super(cardPanel,true);
         this.setLayout(null);
 
-        listener = new MyMouseListener(this);
-
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                onPanelResize();
-            }
-        });
+        listener = new GameMouseListener(this);
 
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
 
         this.setVisible(true);
 
-        startButton = new JButton("Start");
-
-        startButton.addActionListener(e -> {
-            startButton.setVisible(false);
+        addButton("Start", e -> {
+            for (JButton button : buttons) {
+                button.setVisible(false);
+            }
             listener.reset();
             repositionTarget();
             this.repaint();
         });
-        this.add(startButton);
+        addButton(Constants.MAIN_MENU,e -> onCardButtonClicked((JButton) e.getSource()));
         reset();
     }
 
     private void reset() {
-        clicks = 0;
+        System.out.println("reset");
         target = new Point(-Constants.TARGET_SIZE, -Constants.TARGET_SIZE);
-        startButton.setVisible(true);
-
-        final int centerX = (int) (this.getWidth() - startButton.getPreferredSize().getWidth()) / 2;
-        final int centerY = (int) (this.getHeight() - startButton.getPreferredSize().getHeight()) / 2;
-
-        startButton.setBounds(centerX, centerY, startButton.getPreferredSize().width, startButton.getPreferredSize().height);
+        for (JButton button : buttons) {
+            button.setVisible(true);
+        }
         this.repaint();
     }
 
-    private void onPanelResize() {
+    @Override
+    protected void onPanelResize() {
+        if (!wasResized(this.getSize())) return;
+        super.onPanelResize();
         reset();
     }
 

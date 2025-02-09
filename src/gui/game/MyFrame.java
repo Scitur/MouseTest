@@ -1,14 +1,13 @@
 package gui.game;
 
+import util.Constants;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class MyFrame extends JPanel {
-    private final int SIZE = 75;
-    private final int MAX_CLICKS = 10;
-
     private final MyMouseListener listener;
     final private JButton startButton;
     final private JButton button;
@@ -20,14 +19,15 @@ public class MyFrame extends JPanel {
 
         listener = new MyMouseListener(this);
 
-        this.addMouseListener(listener);
-        this.addMouseMotionListener(listener);
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 onPanelResize();
             }
         });
+
+        this.addMouseListener(listener);
+        this.addMouseMotionListener(listener);
 
         this.setVisible(true);
 
@@ -43,11 +43,15 @@ public class MyFrame extends JPanel {
 
         button.setBackground(Color.CYAN);
         button.addActionListener(e -> {
-            if(clicks++ >= MAX_CLICKS) {
+            if (clicks++ == 0) {
+                listener.reset();
+                this.repaint();
+            } else if(clicks >= Constants.TARGET_MAX_CLICKS) {
                 reset();
                 return;
             }
 
+            listener.targetClicked();
             repositionButton();
         });
         this.add(button);
@@ -79,8 +83,8 @@ public class MyFrame extends JPanel {
     }
 
     public void repositionButton() {
-        int x = (int) (Math.random() * (this.getWidth() - SIZE - 16));
-        int y = (int) (Math.random() * (this.getHeight() - SIZE - 39));
-        button.setBounds(x, y, SIZE, SIZE);
+        int x = (int) (Math.random() * (this.getWidth() - Constants.TARGET_SIZE - 16));
+        int y = (int) (Math.random() * (this.getHeight() - Constants.TARGET_SIZE - 39));
+        button.setBounds(x, y, Constants.TARGET_SIZE, Constants.TARGET_SIZE);
     }
 }

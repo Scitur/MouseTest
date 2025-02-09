@@ -10,7 +10,7 @@ import java.awt.event.ComponentEvent;
 public class MyFrame extends JPanel {
     private final MyMouseListener listener;
     final private JButton startButton;
-    final private JButton button;
+    protected Point target;
 
     private int clicks;
 
@@ -32,35 +32,20 @@ public class MyFrame extends JPanel {
         this.setVisible(true);
 
         startButton = new JButton("Start");
-        button = new JButton();
 
         startButton.addActionListener(e -> {
             startButton.setVisible(false);
-            repositionButton();
-            button.setVisible(true);
+            listener.reset();
+            repositionTarget();
+            this.repaint();
         });
         this.add(startButton);
-
-        button.setBackground(Color.CYAN);
-        button.addActionListener(e -> {
-            if (clicks++ == 0) {
-                listener.reset();
-                this.repaint();
-            } else if(clicks >= Constants.TARGET_MAX_CLICKS) {
-                reset();
-                return;
-            }
-
-            listener.targetClicked();
-            repositionButton();
-        });
-        this.add(button);
         reset();
     }
 
     private void reset() {
         clicks = 0;
-        button.setVisible(false);
+        target = new Point(-Constants.TARGET_SIZE, -Constants.TARGET_SIZE);
         startButton.setVisible(true);
 
         final int centerX = (int) (this.getWidth() - startButton.getPreferredSize().getWidth()) / 2;
@@ -78,13 +63,26 @@ public class MyFrame extends JPanel {
     public void paint(Graphics g) {
         super.paint(g);
 
+        g.setColor(Color.CYAN);
+        g.fillRect(target.x, target.y, Constants.TARGET_SIZE, Constants.TARGET_SIZE);
+
         g.setColor(Color.RED);
         listener.paint(g);
     }
 
-    public void repositionButton() {
-        int x = (int) (Math.random() * (this.getWidth() - Constants.TARGET_SIZE - 16));
-        int y = (int) (Math.random() * (this.getHeight() - Constants.TARGET_SIZE - 39));
-        button.setBounds(x, y, Constants.TARGET_SIZE, Constants.TARGET_SIZE);
+    public void onTargetClicked() {
+        if (listener.clicks.size() >= Constants.TARGET_MAX_CLICKS) {
+            reset();
+            this.repaint();
+        } else {
+            repositionTarget();
+        }
+    }
+
+    private void repositionTarget() {
+        int x = (int) (Math.random() * (this.getWidth() - Constants.TARGET_SIZE));
+        int y = (int) (Math.random() * (this.getHeight() - Constants.TARGET_SIZE));
+
+        target.setLocation(x, y);
     }
 }

@@ -12,14 +12,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyMouseListener implements MouseListener, MouseMotionListener {
-    private final Component comp;
+    private final MyFrame comp;
     private Instant start;
 
     private List<Point> path;
-    private List<Integer> clicks;
-    private List<Integer> misclicks;
+    protected List<Integer> clicks;
+    protected List<Integer> misclicks;
 
-    public MyMouseListener(Component parent) {
+    private Rectangle target = new Rectangle(Constants.TARGET_SIZE, Constants.TARGET_SIZE);
+
+    public MyMouseListener(MyFrame parent) {
         comp = parent;
         reset();
     }
@@ -55,13 +57,6 @@ public class MyMouseListener implements MouseListener, MouseMotionListener {
         //System.out.printf("%s - %s%n", tmp.toString(), e.toString());
     }
 
-    public void targetClicked() {
-        if (!path.isEmpty()) {
-            clicks.add(path.size()-1);
-            if (Constants.LIVE_VIEW) comp.repaint();
-        }
-    }
-
     @Override
     public void mouseClicked(MouseEvent e) {
         logMouseEvent(e);
@@ -69,9 +64,16 @@ public class MyMouseListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        misclicks.add(path.size()-1);
-        if (Constants.LIVE_VIEW) comp.repaint();
         logMouseEvent(e);
+        if (target.contains(e.getX()-comp.target.x, e.getY()-comp.target.y)) {
+            clicks.add(path.size()-1);
+        } else {
+            misclicks.add(path.size()-1);
+            if (!Constants.REPOSITION_ON_MISCLICK) return;
+        }
+
+        comp.onTargetClicked();
+        if (Constants.LIVE_VIEW) comp.repaint();
     }
 
     @Override

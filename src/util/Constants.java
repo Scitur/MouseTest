@@ -8,6 +8,7 @@ public class Constants {
 
     public final static int TARGET_SIZE = 75;
     public final static int TARGET_MAX_CLICKS = 10; // You always need to click TARGET_MAX_CLICKS+1 targets
+    public final static boolean REPOSITION_ON_MISCLICK = false;
 
     public final static boolean LIVE_VIEW = true;
 }

@@ -1,19 +1,16 @@
+package gui.game;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class MyFrame extends JFrame {
+public class MyFrame extends JPanel {
     private final int SIZE = 75;
 
     private JButton button = null;
     private MyMouseListener listener;
 
     public MyFrame() {
-        super("Full Screen JFrame");
-
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
         this.setLayout(null);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         listener = new MyMouseListener(this);
         this.addMouseListener(listener);

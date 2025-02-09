@@ -1,3 +1,7 @@
+package gui.game;
+
+import util.VisualizeUtil;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;

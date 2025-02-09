@@ -15,8 +15,9 @@ public class GameMouseListener implements MouseListener, MouseMotionListener {
     private final GamePanel comp;
     private Instant start;
 
-    private List<Point> path;
+    protected List<Point> path;
     protected List<Integer> clicks;
+
     protected List<Integer> misclicks;
 
     private Rectangle target = new Rectangle(Constants.TARGET_SIZE, Constants.TARGET_SIZE);
@@ -33,19 +34,19 @@ public class GameMouseListener implements MouseListener, MouseMotionListener {
         start = Instant.now();
     }
 
-    public void paint(Graphics g) {
+    protected void paint(Graphics g) {
         if (Constants.LIVE_VIEW) {
             final Point[] points = path.toArray(new Point[0]);
             VisualizeUtil.drawPath(g, points);
 
             g.setColor(Color.BLUE);
-            for (int click : misclicks) {
+            for (int click : getMisclicks()) {
                 final Point clickPoint = points[click];
                 g.fillOval(clickPoint.x-2, clickPoint.y-2,5,5);
             }
 
             g.setColor(Color.GREEN);
-            for (int click : clicks) {
+            for (int click : getClicks()) {
                 final Point clickPoint = points[click];
                 g.fillOval(clickPoint.x-2, clickPoint.y-2,5,5);
             }
@@ -55,6 +56,18 @@ public class GameMouseListener implements MouseListener, MouseMotionListener {
     private void logMouseEvent(MouseEvent e) {
         Instant tmp = Instant.now();
         //System.out.printf("%s - %s%n", tmp.toString(), e.toString());
+    }
+
+    public Integer[] getClicks() {
+        return clicks.toArray(new Integer[0]);
+    }
+
+    public Integer[] getMisclicks() {
+        return misclicks.toArray(new Integer[0]);
+    }
+
+    public Point[] getPath() {
+        return path.toArray(new Point[0]);
     }
 
     @Override

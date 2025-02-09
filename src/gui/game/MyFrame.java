@@ -2,23 +2,72 @@ package gui.game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class MyFrame extends JPanel {
     private final int SIZE = 75;
+    private final int MAX_CLICKS = 10;
 
-    private JButton button = null;
-    private MyMouseListener listener;
+    private final MyMouseListener listener;
+    final private JButton startButton;
+    final private JButton button;
+
+    private int clicks;
 
     public MyFrame() {
         this.setLayout(null);
 
         listener = new MyMouseListener(this);
+
         this.addMouseListener(listener);
         this.addMouseMotionListener(listener);
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                onPanelResize();
+            }
+        });
 
         this.setVisible(true);
 
-        generateNewButton();
+        startButton = new JButton("Start");
+        button = new JButton();
+
+        startButton.addActionListener(e -> {
+            startButton.setVisible(false);
+            repositionButton();
+            button.setVisible(true);
+        });
+        this.add(startButton);
+
+        button.setBackground(Color.CYAN);
+        button.addActionListener(e -> {
+            if(clicks++ >= MAX_CLICKS) {
+                reset();
+                return;
+            }
+
+            repositionButton();
+        });
+        this.add(button);
+        reset();
+    }
+
+    private void reset() {
+        clicks = 0;
+        button.setVisible(false);
+        startButton.setVisible(true);
+
+        final int centerX = (int) (this.getWidth() - startButton.getPreferredSize().getWidth()) / 2;
+        final int centerY = (int) (this.getHeight() - startButton.getPreferredSize().getHeight()) / 2;
+
+        startButton.setBounds(centerX, centerY, startButton.getPreferredSize().width, startButton.getPreferredSize().height);
+        this.repaint();
+    }
+
+    private void onPanelResize() {
+        reset();
     }
 
     @Override
@@ -27,31 +76,6 @@ public class MyFrame extends JPanel {
 
         g.setColor(Color.RED);
         listener.paint(g);
-    }
-
-    public void generateNewButton() {
-        if (button != null) {
-            this.remove(button);
-        }
-
-        // Create a JButton
-        button = new JButton("Click Me");
-        button.addActionListener(e -> {
-            button.setText("");
-            button.setBackground(Color.CYAN);
-            repositionButton();
-        });
-
-        // Calculate the center position of the screen
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int centerX = (int) (screenSize.getWidth() - button.getPreferredSize().getWidth()) / 2;
-        int centerY = (int) (screenSize.getHeight() - button.getPreferredSize().getHeight()) / 2;
-
-        // Set the button's location to the center of the screen
-        button.setBounds(centerX, centerY, button.getPreferredSize().width, button.getPreferredSize().height);
-
-        this.add(button);
-        this.repaint();
     }
 
     public void repositionButton() {

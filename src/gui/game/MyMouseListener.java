@@ -24,13 +24,12 @@ public class MyMouseListener implements MouseListener, MouseMotionListener {
     }
 
     public void paint(Graphics g) {
-        System.out.println("Paint");
         VisualizeUtil.drawPath(g, path.toArray(new Point[0]));
     }
 
     private void logMouseEvent(MouseEvent e) {
         Instant tmp = Instant.now();
-        System.out.printf("%s - %s%n", tmp.toString(), e.toString());
+        //System.out.printf("%s - %s%n", tmp.toString(), e.toString());
     }
 
     @Override

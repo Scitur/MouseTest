@@ -9,7 +9,9 @@ import java.awt.*;
 
 public class GamePanel extends CardPanel {
     public static GameMouseListener listener;
-    protected Point target;
+
+    protected Target target;
+    protected Timer timer;
 
     public GamePanel(CardHolderPanel cardPanel) {
         super(cardPanel);
@@ -26,7 +28,14 @@ public class GamePanel extends CardPanel {
                 button.setVisible(false);
             }
             listener.reset();
-            repositionTarget();
+            target.reposition();
+            if (Constants.MOVING_TARGET) {
+                timer = new Timer(20, a -> {
+                    target.move(20);
+                    this.repaint();
+                });
+                timer.start();
+            }
             this.repaint();
         });
         addButton(Constants.MAIN_MENU,e -> onCardButtonClicked((JButton) e.getSource()));
@@ -35,7 +44,8 @@ public class GamePanel extends CardPanel {
 
     private void reset() {
         System.out.println("reset");
-        target = new Point(-Constants.TARGET_SIZE, -Constants.TARGET_SIZE);
+        if (timer != null) timer.stop();
+        target = new Target(this.getBounds(),-Constants.TARGET_SIZE, -Constants.TARGET_SIZE);
         for (JButton button : buttons) {
             button.setVisible(true);
         }
@@ -46,6 +56,7 @@ public class GamePanel extends CardPanel {
     protected void onPanelResize() {
         if (!wasResized(this.getSize())) return;
         super.onPanelResize();
+        target.setConfines(this.getBounds());
         reset();
     }
 
@@ -65,14 +76,9 @@ public class GamePanel extends CardPanel {
             reset();
             this.repaint();
         } else {
-            repositionTarget();
+            target.generateRandomVector();
+            target.reposition();
+            this.repaint();
         }
-    }
-
-    private void repositionTarget() {
-        int x = (int) (Math.random() * (this.getWidth() - Constants.TARGET_SIZE));
-        int y = (int) (Math.random() * (this.getHeight() - Constants.TARGET_SIZE));
-
-        target.setLocation(x, y);
     }
 }

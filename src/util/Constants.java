@@ -9,7 +9,7 @@ public class Constants {
     public final static String EXIT = "Exit";
 
     public final static int TARGET_SIZE = 75;
-    public final static int TARGET_MAX_CLICKS = 3;
+    public final static int TARGET_MAX_CLICKS = 11;
     public final static boolean REPOSITION_ON_MISCLICK = false;
 
     public final static boolean LIVE_VIEW = true;

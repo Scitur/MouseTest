@@ -10,7 +10,7 @@ public class Test {
     public static void basicTest() {
         Point srcOrigin = new Point(0,0);
         Point srcDst = new Point(5,5);
-        Point point = new Point(3,3);
+        Point point = new Point(0,0);
 
         PointTransformer transformer = new PointTransformer(srcOrigin, srcDst, srcDst, srcOrigin);
 

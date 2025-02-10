@@ -46,6 +46,23 @@ public class PointTransformer {
         final double rs = Math.sqrt(px * px + py * py);
         final double alphaS = Math.atan2(py, px) - thetaS;
 
+        // Scale distance
+        final double rd = rs * scale;
+
+        // Compute new position in destination frame (corrected rotation)
+        final double xNew = dx + rd * Math.cos(thetaD + alphaS);
+        final double yNew = dy + rd * Math.sin(thetaD + alphaS);
+
+        return new Point((int) Math.round(xNew), (int) Math.round(yNew));
+    }
+
+    public Point transformOld(double x, double y) {
+        // Compute relative position in source frame
+        final double px = x - sx;
+        final double py = y - sy;
+        final double rs = Math.sqrt(px * px + py * py);
+        final double alphaS = Math.atan2(py, px) - thetaS;
+
         // Scale distance and adjust angle
         final double rd = rs * scale;
         final double alphaD = alphaS + (thetaD - thetaS);

@@ -3,18 +3,23 @@ package util;
 import java.awt.*;
 
 public class PointTransformer {
-    private final double sx, sy, dx, dy;
+    private final double sx, sy, svx, svy, dx, dy, dvx, dvy;
     private final double thetaS, thetaD, scale;
 
     public PointTransformer(double srcX, double srcY, double srcVectorX, double srcVectorY,
                             double dstX, double dstY, double dstVectorX, double dstVectorY) {
         this.sx = srcX;
         this.sy = srcY;
+        this.svx = srcVectorX;
+        this.svy = srcVectorY;
+
         this.dx = dstX;
         this.dy = dstY;
+        this.dvx = dstVectorX;
+        this.dvy = dstVectorY;
 
-        double Ls = Math.sqrt(srcVectorX * srcVectorX + srcVectorY * srcVectorY);
-        double Ld = Math.sqrt(dstVectorX * dstVectorX + dstVectorY * dstVectorY);
+        final double Ls = Math.sqrt(srcVectorX * srcVectorX + srcVectorY * srcVectorY);
+        final double Ld = Math.sqrt(dstVectorX * dstVectorX + dstVectorY * dstVectorY);
 
         if (Ls == 0 || Ld == 0) {
             throw new IllegalArgumentException("Source or destination vector must not be zero-length.");
@@ -50,5 +55,16 @@ public class PointTransformer {
         final int yNew = (int) Math.round(dy + rd * Math.sin(thetaD + alphaD));
 
         return new Point(xNew,yNew);
+    }
+
+    public String toString() {
+        return String.format("%s[origin={%d,%d} vector={%d,%d} dstOrigin={%d,%d} dstVector={%d,%d}]", this.getClass().getCanonicalName(),
+                (int) sx, (int) sy, (int) svx, (int) svy,
+                (int) dx, (int) dy, (int) dvx, (int) dvy);
+    }
+
+    public String debugString() {
+        return String.format("%s[scale=%.2f thetaS=%.2f thetaD=%.2f]", this.getClass().getCanonicalName(),
+                scale, thetaS, thetaD);
     }
 }

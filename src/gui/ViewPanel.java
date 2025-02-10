@@ -15,8 +15,10 @@ public class ViewPanel extends CardPanel {
     private final List<Point[]> paths;
     private boolean normalize = false;
 
+    private Point dstOrigin, dstDst;
+
     public ViewPanel(CardHolderPanel cardPanel) {
-        super(cardPanel);
+        super(cardPanel,Layout.NORTH);
 
         this.setBackground(Color.LIGHT_GRAY);
 
@@ -36,6 +38,24 @@ public class ViewPanel extends CardPanel {
             }
             this.repaint();
         });
+
+        this.setVisible(true);
+
+        dstOrigin = new Point(this.getWidth()/10, this.getHeight()/2);
+        dstDst = new Point(9*this.getWidth()/10, this.getHeight()/2);
+    }
+
+    @Override
+    protected void onPanelResize() {
+        if (!wasResized(this.getSize())) return;
+        super.onPanelResize();
+        System.out.println("1 Resize");
+
+        dstOrigin = new Point(this.getWidth()/10, this.getHeight()/2);
+        dstDst = new Point(9*this.getWidth()/10, this.getHeight()/2);
+
+        System.out.println("2 Resize " + dstOrigin);
+        System.out.println("3 Resize " + dstDst);
     }
 
     private void normalize() {
@@ -44,7 +64,7 @@ public class ViewPanel extends CardPanel {
             final Point[] tmp = new Point[clicks[i]-clicks[i-1]+1];
             System.arraycopy(paths.get(0),clicks[i-1],tmp,0,tmp.length);
 
-            transformer = new PointTransformer(tmp[0], tmp[tmp.length-1], Constants.NORMALIZED_START, Constants.NORMALIZED_END);
+            transformer = new PointTransformer(tmp[0], tmp[tmp.length-1], dstOrigin, dstDst);
             for (int j = 0; j < tmp.length; j++) {
                 tmp[j] = transformer.transform(tmp[j]);
             }
@@ -83,6 +103,12 @@ public class ViewPanel extends CardPanel {
             for (int i = 1; i < paths.size(); i++) {
                 VisualizeUtil.drawPath(g, paths.get(i));
             }
+            final int size = 5;
+            final int sizeHalf = size/2;
+            g.setColor(Color.GREEN);
+            g.fillOval(dstOrigin.x-sizeHalf,dstOrigin.y-sizeHalf,size,size);
+            g.setColor(Color.BLUE);
+            g.fillOval(dstDst.x-sizeHalf, dstDst.y-sizeHalf,size,size);
             return;
         }
         VisualizeUtil.drawPath(g, paths.get(0));

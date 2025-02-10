@@ -13,7 +13,4 @@ public class Constants {
     public final static boolean REPOSITION_ON_MISCLICK = false;
 
     public final static boolean LIVE_VIEW = true;
-
-    public final static Point NORMALIZED_START = new Point(300, 500);
-    public final static Point NORMALIZED_END = new Point(1920-300, 500);
 }

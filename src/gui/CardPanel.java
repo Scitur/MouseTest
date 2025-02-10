@@ -7,30 +7,36 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public abstract class CardPanel extends JPanel {
     protected final CardHolderPanel cardPanel;
     protected final List<JButton> buttons;
+
     private final Dimension prevSize;
 
+    protected Layout layout;
+
     public CardPanel(CardHolderPanel cardPanel) {
-        this(cardPanel,false);
+        this(cardPanel,Layout.CENTER);
     }
 
-    public CardPanel(CardHolderPanel cardPanel, boolean centerButtons) {
+    public CardPanel(CardHolderPanel cardPanel, Layout layout) {
         this.cardPanel = cardPanel;
+        this.layout = layout;
+
         this.buttons = new ArrayList<>();
         this.prevSize = new Dimension(0,0);
 
-        if (centerButtons) {
-            this.addComponentListener(new ComponentAdapter() {
-                @Override
-                public void componentResized(ComponentEvent e) {
-                    onPanelResize();
-                }
-            });
-        }
+        this.setLayout(null);
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                onPanelResize();
+            }
+        });
     }
 
     protected void addButton(String name, Consumer<ActionEvent> listener) {
@@ -64,7 +70,9 @@ public abstract class CardPanel extends JPanel {
         if (!wasResized(this.getSize())) return;
 
         prevSize.setSize(this.getSize());
-        System.out.println("Panel resized to: " + this.getSize());
+        System.out.println(this.getClass().getSimpleName() + " resized to: " + this.getSize());
+
+        if (buttons.isEmpty()) return;
 
         int maxWidthPreferred = 0;
         int maxHeightPreferred = 0;
@@ -80,8 +88,23 @@ public abstract class CardPanel extends JPanel {
 
         Rectangle center = calculateCenter(this.getSize(), new Dimension(maxWidthPreferred, totalHeight));
 
+        switch (layout) {
+            case NORTH:
+                center.x = Math.min(center.x, spacing);
+            default:
+                break;
+        }
+
         for(int i = 0; i < buttons.size(); i++) {
             buttons.get(i).setBounds(center.x, center.y + i*(maxHeightPreferred+spacing), maxWidthPreferred, maxHeightPreferred);
         }
+    }
+
+    enum Layout {
+        CENTER,
+        NORTH,
+        EAST,
+        SOUTH,
+        WEST
     }
 }

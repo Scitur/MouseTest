@@ -12,8 +12,7 @@ public class GamePanel extends CardPanel {
     protected Point target;
 
     public GamePanel(CardHolderPanel cardPanel) {
-        super(cardPanel,true);
-        this.setLayout(null);
+        super(cardPanel);
 
         listener = new GameMouseListener(this);
 

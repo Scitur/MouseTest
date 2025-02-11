@@ -6,6 +6,7 @@ public class Constants {
     public final static String MAIN_MENU = "Main Menu";
     public final static String PLAY = "Play";
     public final static String VIEW = "View";
+    public final static String ROBOT = "Robot";
     public final static String EXIT = "Exit";
 
     public final static int TARGET_SIZE = 75;

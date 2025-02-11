@@ -1,5 +1,6 @@
 import gui.CardHolderPanel;
 import gui.MainMenuPanel;
+import gui.RobotPanel;
 import gui.ViewPanel;
 import gui.game.GamePanel;
 import util.Constants;
@@ -20,6 +21,7 @@ public class Main {
 
         cardPanel.add(new MainMenuPanel(cardPanel), Constants.MAIN_MENU);
         cardPanel.add(new GamePanel(cardPanel), Constants.PLAY);
+        cardPanel.add(new RobotPanel(cardPanel), Constants.ROBOT);
         cardPanel.add(new ViewPanel(cardPanel), Constants.VIEW);
 
         //new MainMenuPanel(frame)
